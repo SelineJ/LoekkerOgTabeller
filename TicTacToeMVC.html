@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicTacToe</title>
+    <style>
+        body
+        {
+            overflow: hidden;
+            display:flex;
+            align-items: center;
+            background-color: indianred;
+            user-select: none;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
+        div.cell {
+            
+            border: lightgoldenrodyellow solid 2px;
+            background-color: darkslategray;
+            width: 200px;
+            height: 200px;
+            margin: 3px;
+            text-align: center;
+            font-size: 600%;
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            float: left;
+            color:gainsboro;
+
+        }
+
+        
+        div.first {
+            clear: left;
+        }
+        #app{
+          
+            margin: auto;
+            
+            
+        }
+
+        h1{
+            margin: 0 ;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            color: whitesmoke;
+            text-align: center;
+            text-shadow: teal 4px 4px;
+        }
+        button{
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            background-color: thistle;
+            color:rgb(34, 126, 75);
+            float: right;
+            
+            
+        }
+</style>
+
+
+    
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+//modell
+let brett = document.getElementById('app');
+let board = ['','','','','','','','',''];    
+let sjekkVinn = '';
+
+
+
+
+//view 
+showBoard();
+function showBoard()
+{   
+    //tegner html koden bruker for loop for å lage 9 diver.
+    let html = `<h1> Tic Tac Toe </h1>
+        </br>
+        <div>
+        <p>${sjekkVinn}</p>  
+        <button onclick="restart()">Start på nytt</button>
+        </br>
+        </br>
+        </div>`;
+    for(let i = 0; i < 9; i++)
+    {    
+        //hver tredje div får classen 'first' for å lage 3x3 brett.
+        let first = i % 3 == 0 ? 'first' : '';
+        html += `<div onclick="setX(${i})" class="cell color ${board[i]} ${first}">${board[i]}</div>`;
+    }
+    brett.innerHTML = html;
+    
+}
+
+//controller
+function setX(index)
+{    
+    if(checkWin() == true) {return;}
+    //hvis valgt rute er tom('') så plasser en 'x' i arrayen board
+    if(board[index] == '')
+    {
+        board[index] = 'x';
+        checkWin(); 
+        setO();
+        showBoard();
+
+    }
+    
+}
+
+function setO()
+{
+    if(checkWin() == true){ return;}
+    //kode fra Terje, tror den sjekker hvilke plasser i arrayen som er blanke
+    var blankeIndekser = Array.from(board.keys()).filter(i=> board[i] === '');
+    //om "lengden" til blankeIndekser er 0, altså om det ikke er flere blanke plasser i arrayen så stopper funksjonen.
+    if(blankeIndekser.length === 0)
+    {
+        sjekkVinn = 'Uavgjort!'
+        return;
+    }
+    // variabelen random gjør at den velger en random plass i arrayen ut ifra de blanke plassen i arrayen, deretter plasserer en 'o'
+    var random = Math.floor(Math.random() * blankeIndekser.length);
+    var blankIndeks = blankeIndekser[random];
+    board[blankIndeks] = 'o';
+    checkWin();
+    showBoard();
+}
+
+//Sjekker alle muligheter for å vinne og returner true om noen har vunnet
+function checkWin() 
+{
+ return checkOne(0, 1, 2) // rad 1
+       || checkOne(3, 4, 5) // rad 2
+       || checkOne(6, 7, 8) // rad 3
+       || checkOne(0, 3, 6) // kolonne 1
+       || checkOne(1, 4, 7) // kolonne 2
+       || checkOne(2, 5, 8) // kolonne 3
+       || checkOne(0, 4, 8) // diagonal 1
+       || checkOne(2, 4, 6); // diagonal 2
+}
+
+function checkOne(index1, index2, index3)
+{
+if (board[index1] == 'x' && board[index1] == board[index2] && board[index2] == board[index3]){
+    sjekkVinn = 'Du vant!';
+    return true;
+}
+if (board[index1] == 'o' && board[index1] == board[index2] && board[index2] == board[index3]){
+    sjekkVinn = 'Du tapte!';
+    return true;
+}
+else
+{
+    sjekkVinn = '';
+    return false;
+}
+}
+
+function restart()
+        {
+            board = ['','','','','','','','',''];
+            sjekkVinn = '';
+            showBoard();
+           
+        }
+
+    </script>
+    
+</body>
+</html>
